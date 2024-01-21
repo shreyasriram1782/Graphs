@@ -1,0 +1,39 @@
+from collections import deque
+
+def minMutation(start, end, bank):
+    bank = set(bank)
+    if end not in bank:
+        return -1  # The end gene is not reachable
+
+    mutations = {'A', 'C', 'G', 'T'}
+
+    queue = deque([(start, 0)])
+
+    while queue:
+        current_gene, mutations_count = queue.popleft()
+
+        if current_gene == end:
+            return mutations_count
+
+        for i in range(len(current_gene)):
+            for mutation in mutations:
+                new_gene = current_gene[:i] + mutation + current_gene[i+1:]
+                if new_gene in bank:
+                    bank.remove(new_gene)
+                    queue.append((new_gene, mutations_count + 1))
+
+    return -1  # No valid mutation sequence found
+
+# Example Usage:
+start = "AACCGGTT"
+end = "AAACGGTA"
+bank = ["AACCGGTA", "AACCGCTA", "AAACGGTA"]
+print(minMutation(start, end, bank))  # Output: 2
+Time Complexity: O(N * M * L), where N is the length of the gene strings, 
+M is the size of the bank, and L is the average length of the gene strings. 
+This is because, in the worst case, every gene in the bank needs to be checked
+for every possible mutation of every gene in the queue.
+
+Space Complexity: O(N * M), where N is the length of the gene strings 
+and M is the size of the bank. 
+This is due to the space used by the queue and the set of valid mutations.

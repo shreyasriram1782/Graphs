@@ -1,0 +1,38 @@
+def dijkstra(source):
+        distances = [float('inf')] * n
+        distances[source] = 0
+        min_heap = [(0, source)]
+
+        while min_heap:
+            dist, node = heapq.heappop(min_heap)
+
+            if dist > distances[node]:
+                continue
+
+            for neighbor, weight in enumerate(graph[node]):
+                if weight + dist < distances[neighbor]:
+                    distances[neighbor] = weight + dist
+                    heapq.heappush(min_heap, (dist + weight, neighbor))
+
+        return distances
+The time complexity of Dijkstra's algorithm with a binary min-heap implementation is O((V + E) * log(V)), 
+where V is the number of vertices and E is the number of edges.
+
+The extract-min operation (removing the minimum element from the priority queue) takes O(log V) time, 
+and since this operation is performed for each vertex, the total time complexity is O(V * log V).
+The decrease-key operation (updating the priority of a vertex in the priority queue) 
+also takes O(log V) time, and it can be performed up to E times in the worst case.
+Space Complexity:
+The space complexity of Dijkstra's algorithm with a binary min-heap is O(V + E), 
+where V is the number of vertices and E is the number of edges.
+
+The space required to store the priority queue is O(V) as each vertex is 
+added once to the priority queue.
+The space required for the adjacency list representation of the graph 
+is O(E) as each edge is represented.
+It's important to note that these complexities assume a sparse graph 
+(E is proportional to V). In the case of a dense graph (E is proportional to V^2), 
+using other data structures, such as Fibonacci heaps, could lead to improved time 
+complexity for certain cases. However, Fibonacci heaps come with a higher constant 
+factor and may not always outperform binary heaps in practice, especially 
+for small to moderately sized graphs.

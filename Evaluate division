@@ -1,0 +1,52 @@
+from collections import defaultdict
+
+def calcEquation(equations, values, queries):
+    # Step 1: Build graph and populate values
+    graph = defaultdict(dict)
+    
+    for (numerator, denominator), value in zip(equations, values):
+        graph[numerator][denominator] = value
+        graph[denominator][numerator] = 1.0 / value  # Add the reverse edge
+
+    # Step 2: DFS to find the result for each query
+    def dfs(start, end, visited):
+        # If start or end not in graph or already visited
+        if start not in graph or end not in graph or start in visited:
+            return -1.0
+
+        # If start equals end
+        if start == end:
+            return 1.0
+
+        visited.add(start)
+        # Recursively calculate the result by traversing the graph
+        for neighbor, value in graph[start].items():
+            result = dfs(neighbor, end, visited)
+            # If a valid result is found in the recursion
+            if result != -1.0:
+                return value * result
+
+        return -1.0
+
+    # Step 3: Evaluate each query
+    results = []
+    for query in queries:
+        start, end = query
+        visited = set()
+        result = dfs(start, end, visited)
+        results.append(result)
+
+    return results
+
+# Example Usage:
+equations = [["a", "b"], ["b", "c"]]
+values = [2.0, 3.0]
+queries = [["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"]]
+
+# Evaluate the division
+results = calcEquation(equations, values, queries)
+print(results)
+    # Time Complexity: O(Q * (V + E)) for evaluating all queries,
+    # where Q is the number of queries, V is the number of variables (nodes), and E is the number of equations (edges)
+
+    # Space Complexity: O(V + E) for the graph representation.

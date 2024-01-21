@@ -1,0 +1,36 @@
+from collections import defaultdict, deque
+
+def canFinish(numCourses, prerequisites):
+    # Step 1: Build graph
+    graph = defaultdict(list)
+    in_degree = [0] * numCourses
+    
+    for course, prereq in prerequisites:
+        graph[prereq].append(course)
+        in_degree[course] += 1
+
+    # Step 2: Topological Sorting
+    queue = deque()
+    for i in range(numCourses):
+        if in_degree[i] == 0:
+            queue.append(i)
+
+    while queue:
+        current_course = queue.popleft()
+        numCourses -= 1
+
+        for neighbor in graph[current_course]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    # If there is a valid topological order, it's possible to finish all courses
+    # Time Complexity: O(V + E) where V is the number of courses and E is the number of prerequisites
+    # Space Complexity: O(V + E) considering the graph, in_degree array, and the queue
+    
+    return numCourses == 0
+
+# Example Usage:
+numCourses = 2
+prerequisites = [[1, 0]]
+print(canFinish(numCourses, prerequisites))  # Output: True

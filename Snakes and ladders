@@ -1,0 +1,48 @@
+from collections import deque
+
+def snakesAndLadders(board):
+    n = len(board)
+    destination = n * n
+
+    def square_to_coords(square):
+        row = (square - 1) // n
+        col = (square - 1) % n if row % 2 == 0 else n - 1 - (square - 1) % n
+        return row, col
+
+    visited = set()
+    queue = deque([(1, 0)])
+
+    while queue:
+        current_square, rolls = queue.popleft()
+
+        if current_square == destination:
+            return rolls
+
+        if current_square not in visited:
+            visited.add(current_square)
+
+            for i in range(1, 7):
+                next_square = current_square + i
+
+                if next_square <= destination:
+                    row, col = square_to_coords(next_square)
+                    next_square_value = board[row][col] if board[row][col] != -1 else next_square
+
+                    if next_square_value not in visited:
+                        queue.append((next_square_value, rolls + 1))
+
+    return -1  # Destination not reachable
+
+# Example Usage:
+board = [
+    [-1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1],
+    [-1, 35, -1, -1, 13, -1],
+    [-1, -1, -1, -1, -1, -1],
+    [-1, 15, -1, -1, -1, -1]
+]
+print(snakesAndLadders(board))  # Output: 4
+Time Complexity: O(N^2), where N is the size of the board. This is because, in the worst case, each square is visited once, and for each square, the neighbors are explored.
+
+Space Complexity: O(N^2), where N is the size of the board. This is due to the space used by the set of visited squares and the queue.

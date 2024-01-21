@@ -1,0 +1,48 @@
+import heapq
+
+def dijkstra(graph, start):
+    # Implementation of Dijkstra's algorithm to find the shortest paths
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+
+    priority_queue = [(0, start)]
+
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    return distances
+
+def min_cost_water_supply(village_size, pipes, water_sources):
+    # Create a graph representation
+    graph = {i: {} for i in range(1, village_size + 1)}
+
+    for source, destination, cost in pipes:
+        graph[source][destination] = cost
+        graph[destination][source] = cost
+
+    # Calculate the minimum cost of water supply to each house
+    min_costs = dijkstra(graph, 0)  # Assuming water source is represented by node 0
+
+    # Display the minimum costs for each house
+    for house in range(1, village_size + 1):
+        print(f"Minimum cost to supply water to House {house}: {min_costs[house]}")
+
+# Example usage:
+village_size = 5
+pipes = [(0, 1, 2), (1, 2, 4), (2, 3, 5), (3, 4, 3), (4, 0, 1)]
+water_sources = [0]
+
+min_cost_water_supply(village_size, pipes, water_sources)
+Time Complexity (TC): O((V + E) * log(V)) for Dijkstra's algorithm, where V is the number of nodes (houses) and E is the number of edges (pipes).
+
+Space Complexity (SC): O(V + E) for storing the graph as an adjacency list.

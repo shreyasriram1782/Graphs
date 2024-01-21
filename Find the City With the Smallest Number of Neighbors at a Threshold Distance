@@ -1,0 +1,51 @@
+import heapq
+
+def findTheCity(n, edges, distanceThreshold):
+    # Step 1: Create the graph (adjacency matrix)
+    graph = [[float('inf')] * n for _ in range(n)]
+    for i, j, k in edges:
+        graph[i][j] = graph[j][i] = k
+
+    # Step 2: Dijkstra's Algorithm
+    def dijkstra(source):
+        distances = [float('inf')] * n
+        distances[source] = 0
+        min_heap = [(0, source)]
+
+        while min_heap:
+            dist, node = heapq.heappop(min_heap)
+
+            if dist > distances[node]:
+                continue
+
+            for neighbor, weight in enumerate(graph[node]):
+                if weight + dist < distances[neighbor]:
+                    distances[neighbor] = weight + dist
+                    heapq.heappush(min_heap, (dist + weight, neighbor))
+
+        return distances
+
+    # Step 3 and 4: Count neighbors within the distance threshold for each city
+    min_neighbors = float('inf')
+    result_city = -1
+
+    for city in range(n):
+        distances = dijkstra(city)
+        neighbors_within_threshold = sum(1 for dist in distances if 0 < dist <= distanceThreshold)
+
+        if neighbors_within_threshold <= min_neighbors:
+            min_neighbors = neighbors_within_threshold
+            result_city = city
+
+    return result_city
+
+# Example Usage:
+n = 5
+edges = [[0,2,4],[0,3,2],[1,2,1],[2,4,1],[2,3,4],[3,4,2]]
+distanceThreshold = 2
+print(findTheCity(n, edges, distanceThreshold))  # Output: 0
+Time Complexity: O(V^2 * log(V) + V * E), where V is the number of vertices (cities) 
+and E is the number of edges (connections between cities). 
+The dominating factor is the Dijkstra's algorithm, which has a time complexity of O(V^2 * log(V)) with a binary heap implementation.
+
+Space Complexity: O(V^2), where V is the number of vertices (cities). This is due to the space used by the graph (adjacency matrix) and other variables.

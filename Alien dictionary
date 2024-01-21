@@ -1,0 +1,38 @@
+from collections import defaultdict, deque
+
+def alienOrder(words):
+    graph = defaultdict(set)
+    in_degree = {char: 0 for word in words for char in word}
+
+    for pair in zip(words, words[1:]):
+        for c1, c2 in zip(*pair):
+            if c1 != c2:
+                if c2 not in graph[c1]:
+                    graph[c1].add(c2)
+                    in_degree[c2] += 1
+                break
+
+    queue = deque([char for char in in_degree if in_degree[char] == 0])
+    result = []
+
+    while queue:
+        current_char = queue.popleft()
+        result.append(current_char)
+
+        for neighbor in graph[current_char]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    return ''.join(result) if len(result) == len(in_degree) else ''
+
+# Example Usage:
+words = ["wrt", "wrf", "er", "ett", "rftt"]
+print(alienOrder(words))  # Output: "wertf"
+Time Complexity: O(C + V), where C is the total number of characters 
+and V is the total number of vertices (characters). In the worst case, 
+each character is processed once, and each edge is visited once.
+
+Space Complexity: O(C + V), where C is the total number of characters and 
+V is the total number of vertices (characters). This is due to the space 
+used by the graph and in-degree dictionary.

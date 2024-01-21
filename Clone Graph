@@ -1,0 +1,35 @@
+from collections import defaultdict
+
+class Node:
+    def __init__(self, val=0, neighbors=None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+def cloneGraph(node):
+    if not node:
+        return None
+
+    visited = {}
+
+    def dfs(original_node):
+        if original_node in visited:
+            return visited[original_node]
+
+        # Create a new node with the same value
+        new_node = Node(original_node.val)
+        visited[original_node] = new_node
+
+        # Recursively clone the neighbors
+        for neighbor in original_node.neighbors:
+            new_node.neighbors.append(dfs(neighbor))
+
+        return new_node
+
+    return dfs(node)
+
+# Time Complexity: O(V + E) - Visit each node and edge once during DFS.
+#   - V: Number of nodes (vertices)
+#   - E: Number of edges in the graph.
+
+# Space Complexity: O(V) - Additional space for the visited dictionary.
+#   - In the worst case, all nodes are visited.

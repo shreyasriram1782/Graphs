@@ -1,0 +1,45 @@
+def numIslands(grid):
+    if not grid or not grid[0]:
+        return 0
+
+    def dfs(i, j):
+        # Check if the current cell is within bounds and is land
+        if 0 <= i < m and 0 <= j < n and grid[i][j] == '1':
+            # Mark the current cell as visited
+            grid[i][j] = '0'
+            
+            # Explore adjacent land cells (up, down, left, right)
+            dfs(i + 1, j)
+            dfs(i - 1, j)
+            dfs(i, j + 1)
+            dfs(i, j - 1)
+
+    m, n = len(grid), len(grid[0])
+    num_islands = 0
+
+    # Iterate through each cell in the grid
+    for i in range(m):
+        for j in range(n):
+            # If the current cell is land, perform DFS to mark the connected land cells
+            if grid[i][j] == '1':
+                num_islands += 1
+                dfs(i, j)
+
+    return num_islands
+
+# Example usage:
+grid = [
+    ['1', '1', '1', '1', '0'],
+    ['1', '1', '0', '1', '0'],
+    ['1', '1', '0', '0', '0'],
+    ['0', '0', '0', '0', '0']
+]
+
+result = numIslands(grid)
+print(result)  # Output: 1
+
+
+"""
+    # Time Complexity: O(m * n) - Each cell is visited once during DFS.
+    # Space Complexity: O(min(m, n)) - Recursive DFS call stack depth.
+"""

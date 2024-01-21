@@ -1,0 +1,47 @@
+def solve(board):
+    if not board or not board[0]:
+        return
+
+    m, n = len(board), len(board[0])
+
+    def dfs(i, j):
+        if 0 <= i < m and 0 <= j < n and board[i][j] == 'O':
+            # Mark the current cell as visited
+            board[i][j] = 'V'
+
+            # Explore adjacent cells (up, down, left, right)
+            dfs(i + 1, j)
+            dfs(i - 1, j)
+            dfs(i, j + 1)
+            dfs(i, j - 1)
+
+    # Mark 'O' cells on the border and their connected cells
+    for i in range(m):
+        for j in range(n):
+            if i == 0 or i == m - 1 or j == 0 or j == n - 1:
+                if board[i][j] == 'O':
+                    dfs(i, j)
+
+    # Capture surrounded 'O' cells and revert marked cells back to 'O'
+    for i in range(m):
+        for j in range(n):
+            if board[i][j] == 'O':
+                board[i][j] = 'X'
+            elif board[i][j] == 'V':
+                board[i][j] = 'O'
+
+# Example usage:
+board = [
+    ['X', 'X', 'X', 'X'],
+    ['X', 'O', 'O', 'X'],
+    ['X', 'X', 'O', 'X'],
+    ['X', 'O', 'X', 'X']
+]
+
+solve(board)
+
+# The modified board after capturing surrounded regions:
+for row in board:
+    print(row)
+# Time Complexity: O(m * n) - Each cell is visited at most twice.
+    # Space Complexity: O(m * n) - Recursive DFS call stack depth.

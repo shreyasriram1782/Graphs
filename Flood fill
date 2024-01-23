@@ -1,0 +1,49 @@
+The flood fill algorithm is a straightforward approach to filling a
+connected region of pixels in an image with a new color. The idea is 
+to start from a given pixel and recursively visit its neighboring pixels,
+changing their color to the new color if they have the same original color.
+This process continues until all connected pixels of the same original color are visited and changed.
+
+Algorithm:
+Define a Recursive Function:
+
+The algorithm typically uses a recursive function to traverse the pixels.
+The function takes the current pixel coordinates (row, column), 
+the original color of the starting pixel, and the new color as parameters.
+Base Case:
+
+The base case checks whether the current pixel is within the bounds of the 
+image and whether its color matches the original color.
+If the base case is satisfied, update the color of the current pixel to the new color.
+Recursive Calls:
+
+Make recursive calls to the function for the neighboring pixels (up, down, left, right).
+The recursive calls continue the flood fill process for connected pixels.
+
+def floodFill(image, sr, sc, newColor):
+    def dfs(row, col, originalColor):
+        # Base case: Check if the pixel is within bounds and has the same color as the starting pixel
+        if 0 <= row < m and 0 <= col < n and image[row][col] == originalColor:
+            # Update the color of the current pixel
+            image[row][col] = newColor
+            # Recursive calls for the 4-directionally connected pixels
+            dfs(row + 1, col, originalColor)
+            dfs(row - 1, col, originalColor)
+            dfs(row, col + 1, originalColor)
+            dfs(row, col - 1, originalColor)
+
+    m, n = len(image), len(image[0])
+    originalColor = image[sr][sc]
+
+    # Start DFS from the starting pixel
+    dfs(sr, sc, originalColor)
+
+    return image
+Efficiency:
+
+The time complexity is O(m * n), where m is the number of rows
+and n is the number of columns in the image. This is because, 
+in the worst case, every pixel in the image needs to be visited once.
+The space complexity is O(m * n) in the worst case due to the
+recursion stack during DFS. The maximum depth of the recursion 
+stack is bounded by the total number of pixels in the image.
